@@ -117,7 +117,7 @@ else:
         return v.decode(encoding, errors)
     def url_unquote_native(v, encoding='utf-8', errors='replace'): # pragma: no cover
         return native_(url_unquote_text(v, encoding, errors))
-        
+
 
 if PY3: # pragma: no cover
     import builtins
@@ -174,7 +174,7 @@ if PY3: # pragma: no cover
         return list(map(*arg))
 else:
     map_ = map
-    
+
 if PY3: # pragma: no cover
     def is_nonstr_iter(v):
         if isinstance(v, str):
@@ -183,7 +183,7 @@ if PY3: # pragma: no cover
 else:
     def is_nonstr_iter(v):
         return hasattr(v, '__iter__')
-    
+
 if PY3: # pragma: no cover
     im_func = '__func__'
     im_self = '__self__'
@@ -212,7 +212,7 @@ except NameError: # pragma: no cover
     input_ = input
 
 
-try: 
+try:
     from StringIO import StringIO as NativeIO
 except ImportError: # pragma: no cover
     from io import StringIO as NativeIO
@@ -221,7 +221,7 @@ except ImportError: # pragma: no cover
 # versions which attempt to import it
 import json
 
-    
+
 if PY3: # pragma: no cover
     # see PEP 3333 for why we encode WSGI PATH_INFO to latin-1 before
     # decoding it to utf-8
@@ -232,7 +232,7 @@ else:
         return path.decode('utf-8')
 
 if PY3: # pragma: no cover
-    # see PEP 3333 for why we decode the path to latin-1 
+    # see PEP 3333 for why we decode the path to latin-1
     from urllib.parse import unquote_to_bytes
     def unquote_bytes_to_wsgi(bytestring):
         return unquote_to_bytes(bytestring).decode('latin-1')

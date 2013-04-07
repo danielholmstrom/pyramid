@@ -32,7 +32,7 @@ def as_sorted_tuple(val):
 # over = before
 
 class PredicateList(object):
-    
+
     def __init__(self):
         self.sorter = TopologicalSorter()
         self.last_added = None
