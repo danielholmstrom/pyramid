@@ -15,6 +15,12 @@
 import os
 import sys
 
+# Required for nose.collector, see http://bugs.python.org/issue15881#msg170215
+try:
+    import multiprocessing
+except ImportError:
+    pass
+
 from setuptools import setup, find_packages
 
 py_version = sys.version_info[:2]
@@ -52,6 +58,7 @@ install_requires=[
 
 tests_require = [
     'WebTest >= 1.3.1', # py3 compat
+    'nose >= 1.2.1',
     ]
 
 if not PY3:
@@ -103,7 +110,7 @@ setup(name='pyramid',
           'docs':docs_extras,
           },
       tests_require = tests_require,
-      test_suite="pyramid.tests",
+      test_suite="nose.collector",
       entry_points = """\
         [pyramid.scaffold]
         starter=pyramid.scaffolds:StarterProjectTemplate
@@ -121,6 +128,8 @@ setup(name='pyramid',
         [paste.server_runner]
         wsgiref = pyramid.scripts.pserve:wsgiref_server_runner
         cherrypy = pyramid.scripts.pserve:cherrypy_server_runner
+        [nose.plugins.0.10]
+        pyversion = pyramid.testing:NosePyVersion
       """
       )
 

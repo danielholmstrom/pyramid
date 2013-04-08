@@ -42,6 +42,8 @@ from pyramid.request import (
 from pyramid.url import URLMethodsMixin
 from pyramid.util import InstancePropertyMixin
 
+from nose.plugins import Plugin
+
 _marker = object()
 
 class DummyRootFactory(object):
@@ -281,7 +283,7 @@ class DummySession(dict):
             token = self.new_csrf_token()
         return token
 
-        
+
 @implementer(IRequest)
 class DummyRequest(DeprecatedRequestMethodsMixin, URLMethodsMixin,
                    CallbackMethodsMixin, InstancePropertyMixin):
@@ -616,3 +618,44 @@ def testConfig(registry=None,
         yield config
     finally:
         tearDown(unhook_zca=hook_zca)
+
+
+class NosePyVersion(Plugin):
+    """Nose plugin that excludes files based on python version and file name
+
+    If a filename has the format NAME-pyVERSION.py and VERSION doesn't match
+    [major][minor][micro], [major][minor] or [major] the file will be excluded
+    from tests. The file will not be parsed at all so python-version specific
+    syntax can be used in those files.
+
+    Example of filenames::
+
+        test_file-py2.py
+        test_file-py27.py
+        test_file-py273.py
+        test_file-py3.py
+        test_file-py33.py
+        test_file-py330.py
+
+    """
+
+    name = 'pyversion'
+
+    def wantFile(self, file):
+        """Excludes files based on filename and python version
+
+        :returns: False if the filename indicates that it is not compatible\
+                with the current python version
+        """
+        import sys
+        import re
+
+        version = [sys.version_info.major, sys.version_info.minor,
+                   sys.version_info.micro]
+        if (re.match(r'^.+-py\d+\.py$', file) and
+                not re.match(r'^.+-py{0}(({1})|({1}{2}))?\.py$'
+                             .format(*version),
+                             file)):
+            return False
+        else:
+            return None
